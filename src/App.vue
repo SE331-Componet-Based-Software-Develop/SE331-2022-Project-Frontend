@@ -39,8 +39,20 @@
   </div>
 </template>
 <script>
+import AuthService from '@/services/AuthService.js'
 export default {
-  inject: ['GStore']
+  inject: ['GStore'],
+  computed: {
+    currentUser() {
+      return localStorage.getItem('user')
+    }
+  },
+  methods: {
+    logout() {
+      AuthService.logout()
+      this.$router.go()
+    }
+  }
 }
 </script>
 <style>
