@@ -1,16 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
-import PeopleDetailView from '../views/PeopleDetailView.vue'
-import PeopleVaccineDetailView from '../views/PeopleVaccineDetailView'
+import PatientDetailView from '../views/PatientDetailView.vue'
+import PatientVaccineDetailView from '../views/PatientVaccineDetailView'
 import VaccineDetailView from '../views/VaccineDetailView.vue'
 import LayoutView from '../views/LayoutView.vue'
 import NotFoundView from '../views/NotFoundView.vue'
 import NetWorkErrorView from '../views/NetworkErrorView.vue'
-import PeopleService from '../services/PeopleService.js'
+import PatientService from '../services/PatientService.js'
+import DoctorLayoutView from '@/views/DoctorLayoutView'
+import DoctorCommentView from '@/views/DoctorCommentView'
+import DoctorPatientView from '@/views/DoctorPatientView'
+import DoctorPatientDetailView from '@/views/DoctorPatientDetailView'
 import NProgress from 'nprogress'
 import GStore from '@/store'
-import DoctorCommentView from '../views/DoctorCommentView.vue'
 import Login from '@/views/LoginFormView.vue'
 const routes = [
   {
@@ -27,20 +30,20 @@ const routes = [
     component: AboutView
   },
   {
-    path: '/people/:id',
+    path: '/patient/:id',
     name: 'Layout',
     component: LayoutView,
     props: true,
     beforeEnter: (to) => {
-      return PeopleService.getPeople(to.params.id)
+      return PatientService.getPeople(to.params.id)
         .then((response) => {
-          GStore.people = response.data
+          GStore.patient = response.data
         })
         .catch((error) => {
           if (error.response && error.response.status == 404) {
             this.$router.push({
               name: '404Resource',
-              params: { resoutce: 'people' }
+              params: { resoutce: 'patient' }
             })
           } else {
             this.$router.push({ name: 'NetworkError' })
@@ -50,27 +53,64 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'PeopleDetail',
-        component: PeopleDetailView,
+        name: 'PatientDetail',
+        component: PatientDetailView,
         props: true
       },
       {
         path: '',
-        name: 'PeopleVaccineDetail',
-        component: PeopleVaccineDetailView,
+        name: 'PatientVaccineDetail',
+        component: PatientVaccineDetailView,
         props: true
-      },
-      {
-        path: '',
-        name: 'DoctorComment',
-        component: DoctorCommentView
       }
     ]
   },
   {
-    path: '/',
+    path: '/DoctorLayout/:id',
+    name: 'DoctorLayoutView',
+    component: DoctorLayoutView,
+    props: true,
+    beforeEnter: (to) => {
+      return PatientService.getPeople(to.params.id)
+        .then((response) => {
+          GStore.patient = response.data
+        })
+        .catch((error) => {
+          if (error.response && error.response.status == 404) {
+            this.$router.push({
+              name: '404Resource',
+              params: { resoutce: 'patient' }
+            })
+          } else {
+            this.$router.push({ name: 'NetworkError' })
+          }
+        })
+    },
+    children: [
+      {
+        path: '',
+        name: 'DoctorPatientDetailView',
+        component: DoctorPatientDetailView,
+        props: true
+      },
+      {
+        path: '',
+        name: 'DoctorCommentView',
+        component: DoctorCommentView,
+        props: true
+      }
+    ]
+  },
+  {
+    path: '',
     name: 'VaccineDetail',
     component: VaccineDetailView,
+    props: true
+  },
+  {
+    path: '',
+    name: 'DoctorPatientView',
+    component: DoctorPatientView,
     props: true
   },
   {
@@ -107,6 +147,7 @@ const router = createRouter({
     }
   }
 })
+
 router.beforeEach(() => {
   NProgress.start
   NProgress.set(0.4)

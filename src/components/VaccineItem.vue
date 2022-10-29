@@ -1,41 +1,35 @@
 <template>
-  <div class="background">
-    <div id="building">
-      <div class="left-nav"><img :src="imgURL" /></div>
-      <div class="list-item">
-        <ul>
-          <li>
-            <br />
-            <div class="title">Name</div>
-            <div class="value">{{ people.Name }}</div>
-            <br />
-          </li>
-          <li>
-            <div class="title">SurName</div>
-            <div class="value">{{ people.Surname }}</div>
-            <br />
-          </li>
-          <li>
-            <div class="title">Age</div>
-            <div class="value">{{ people.Age }}</div>
-            <br />
-          </li>
-          <li>
-            <div class="title">Home Town</div>
-            <div class="value">{{ people.Home_town }}</div>
-          </li>
-        </ul>
-        <br />
-      </div>
-    </div>
-  </div>
+  <h1></h1>
+  <h2></h2>
+  <li>
+    <span>{{ vaccine.id }}</span> |
+    <span>{{ vaccine.patient.name }} {{ vaccine.patient.sur_name }}</span> |
+    <span>{{ vaccine.vaccined_status }}</span>
+    <span>{{ vaccine.firstdose_name }}</span>
+    <span>{{ vaccine.firstdose_time }}</span>
+    <span>{{ vaccine.seconddose_name }}</span>
+    <span>{{ vaccine.seconddose_time }}</span>
+    <button>Update</button>
+  </li>
 </template>
 <script>
 export default {
-  props: ['people'],
+  name: 'VaccineItem',
+  props: {
+    vaccine: {
+      type: Object,
+      required: true
+    }
+  },
   computed: {
-    imgURL() {
-      return require('../assets/' + this.people.id + '.jpg')
+    firstdose() {
+      return function (dose) {
+        if (dose) return 'Vaccinated'
+        else return 'Not vaccinated'
+      }
+    },
+    imgURl: function () {
+      return this.img
     }
   }
 }
@@ -51,11 +45,11 @@ export default {
   flex-direction: column;
   padding: 10px;
   width: 500px;
-  height: 200px;
+  height: 150px;
   cursor: pointer;
   border: 3px solid #a6abb1;
   border-radius: 20px;
-  margin: auto;
+  margin-bottom: 18px;
   text-align: center;
   background-image: url('../assets/card.jpg');
   background-position: absolute;
@@ -91,13 +85,13 @@ export default {
   float: right;
 }
 /* #building {
-  background: url('../assets/bc.jpg');
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  overflow: auto;
-  background-size: 100% 100%;
-} */
+    background: url('../assets/bc.jpg');
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: auto;
+    background-size: 100% 100%;
+  } */
 body {
   overflow: auto;
 }
@@ -112,8 +106,8 @@ li {
 .title {
   position: absolute;
   width: 35%;
-  text-align: center;
-  text-align-last: center;
+  text-align: justify;
+  text-align-last: justify;
 }
 .title:before {
   position: absolute;
@@ -122,7 +116,6 @@ li {
 }
 .value {
   padding-left: 40%;
-  color: green;
 }
 .name {
   color: green;

@@ -1,15 +1,15 @@
 <template>
-  <div class="background" v-if="GStore.people">
+  <div class="background" v-if="GStore.patient">
     <div id="nav">
-      <router-link :to="{ name: 'PeopleDetail' }">People Details</router-link>|
-      <router-link :to="{ name: 'PeopleVaccineDetail' }"
-        >Vaccine Details</router-link
+      <router-link :to="{ name: 'PatientDetail' }">Details</router-link>|
+      <router-link :to="{ name: 'PatientVaccineDetail' }"
+        >VaccineDetails</router-link
       >|
       <router-link :to="{ name: 'DoctorComment' }"
         >Doctor's Comments</router-link
       >
     </div>
-    <router-view :people="GStore.people" />
+    <router-view :patient="GStore.patient" />
   </div>
 </template>
 <script>

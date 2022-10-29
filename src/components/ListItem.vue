@@ -1,23 +1,14 @@
 <template>
-  <router-link :to="{ name: 'PeopleDetail', params: { id: people.id } }">
+  <router-link :to="{ name: 'PatientDetail', params: { id: patient.id } }">
     <div id="building">
       <div class="left-nav"><img :src="imgURl" /></div>
       <div class="list-item">
         <ul>
           <li>
-            <div class="name">{{ people.Name }} {{ people.Surname }}</div>
-          </li>
-          <li>
-            <br />
-            <div class="status">The status of vaccined:</div>
-          </li>
-          <li>
-            <div class="title">First dose</div>
-            <div class="value">{{ firstdose(people.First_dose) }}</div>
-          </li>
-          <li>
-            <div class="title">Second dose</div>
-            <div class="value">{{ firstdose(people.Second_dose) }}</div>
+            <div class="name">Name:{{ patient.name }}</div>
+            <div class="name">Surname:{{ patient.sur_name }}</div>
+            <div class="name">The status of vaccined:</div>
+            <div class="value">{{ patient.vaccineinfo.vaccined_status }}</div>
           </li>
         </ul>
         <br />
@@ -30,11 +21,11 @@ export default {
   name: 'ListItem',
   data() {
     return {
-      img: require('../assets/' + this.people.id + '.jpg')
+      img: require('../assets/' + this.patient.id + '.jpg')
     }
   },
   props: {
-    people: {
+    patient: {
       type: Object,
       required: true
     }
@@ -63,7 +54,7 @@ export default {
   flex-direction: column;
   padding: 10px;
   width: 500px;
-  height: 150px;
+  height: 220px;
   cursor: pointer;
   border: 3px solid #a6abb1;
   border-radius: 20px;

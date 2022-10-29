@@ -1,11 +1,11 @@
 <template>
-  <router-link :to="{ name: 'PeopleDetail', params: { id: people.id } }">
-    <div id="building" v-if="people.First_dose">
+  <router-link :to="{ name: 'PatientDetail', params: { id: patient.id } }">
+    <div id="building" v-if="patient.First_dose">
       <div class="left-nav"><img :src="imgURl" /></div>
       <div class="list-item">
         <ul>
           <li>
-            <div class="name">{{ people.Name }} {{ people.Surname }}</div>
+            <div class="name">{{ patient.name }} {{ patient.sur_name }}</div>
           </li>
           <li>
             <br />
@@ -13,11 +13,11 @@
           </li>
           <li>
             <div class="title">First dose</div>
-            <div class="value">{{ firstdose(people.First_dose) }}</div>
+            <div class="value">{{ firstdose(patient.First_dose) }}</div>
           </li>
           <li>
             <div class="title">Second dose</div>
-            <div class="value">{{ firstdose(people.Second_dose) }}</div>
+            <div class="value">{{ firstdose(patient.Second_dose) }}</div>
           </li>
         </ul>
         <br />
@@ -30,11 +30,11 @@ export default {
   name: 'ListItem',
   data() {
     return {
-      img: require('../assets/' + this.people.id + '.jpg')
+      img: require('../assets/' + this.patient.id + '.jpg')
     }
   },
   props: {
-    people: {
+    patient: {
       type: Object,
       required: true
     }

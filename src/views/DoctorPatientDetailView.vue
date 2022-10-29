@@ -6,71 +6,80 @@
         <ul>
           <li>
             <br />
-            <div class="title">First_dose</div>
-            <div class="value">{{ firstdose(people.First_dose) }}</div>
-          </li>
-          <li>
-            <div class="title">Vaccination Name</div>
-            <div class="value">{{ people.First_type }}</div>
-          </li>
-          <li>
-            <div class="title">Vaccination date</div>
-            <div class="value">{{ people.First_dose_time }}</div>
+            <div class="title">Name</div>
+            <div class="value">{{ patient.name }}</div>
             <br />
           </li>
           <li>
-            <div class="title">Second_dose</div>
-            <div class="value">{{ firstdose(people.Second_dose) }}</div>
+            <div class="title">SurName</div>
+            <div class="value">{{ patient.sur_name }}</div>
+            <br />
           </li>
           <li>
-            <div class="title">Vaccination Name</div>
-            <div class="value">{{ people.Second_type }}</div>
+            <div class="title">Age</div>
+            <div class="value">{{ patient.age }}</div>
+            <br />
+          </li>
+          <li>
+            <div class="title">Home Town</div>
+            <div class="value">{{ patient.hometown }}</div>
+          </li>
+        </ul>
+        <br />
+      </div>
+    </div>
+    <div id="building">
+      <div class="left-nav"><img :src="imgURL" /></div>
+      <div class="list-item">
+        <ul>
+          <li>
+            <br />
+            <div class="title">First Dose</div>
+            <div class="value">
+              {{ dose(patient.vaccineinfo.firstdose_name) }}
+            </div>
+          </li>
+          <li>
+            <div class="title">First Dose Date</div>
+            <div class="value">
+              {{ time(patient.vaccineinfo.firstdose_time) }}
+            </div>
+            <br />
+          </li>
+          <li>
+            <div class="title">Second Dose</div>
+            <div class="value">
+              {{ dose(patient.vaccineinfo.seconddose_name) }}
+            </div>
+          </li>
+          <li>
+            <div class="title">Second Dose</div>
+            <div class="value">
+              {{ time(patient.vaccineinfo.seconddose_time) }}
+            </div>
           </li>
           <br />
-          <li>
-            <div class="title">Vaccination date</div>
-            <div class="value">{{ people.Second_dose_time }}</div>
-          </li>
         </ul>
       </div>
     </div>
-    <button @click="vaccine">hhh</button>
   </div>
 </template>
 <script>
 export default {
-  props: ['id', 'people'],
-  inject: ['GStore'],
-  methods: {
-    vaccine() {
-      this.GStore.flashMessage =
-        'You are successfully return to ' +
-        this.people.Name +
-        ' ' +
-        this.people.Surname
-      setTimeout(() => {
-        this.GStore.flashMessage = ''
-      }, 3000)
-      this.$router.push({
-        name: 'PeopleDetail',
-        params: { id: this.people.id }
-      })
-    }
-  },
+  props: ['patient'],
   computed: {
-    firstdose() {
-      return function (dose) {
-        if (dose) return 'Get'
-        else return 'Not Yet'
-      }
-    },
     imgURL() {
-      return require('../assets/' + this.people.id + '.jpg')
+      return require('../assets/' + this.patient.id + '.jpg')
     }
   }
 }
 </script>
 <style scoped>
+.name {
+  color: green;
+  font: bold;
+  font-size: 20px;
+}
 #building {
   display: flex;
   flex-direction: column;
@@ -92,9 +101,8 @@ export default {
   text-align: left;
   float: right;
   position: absolute;
-  width: 400px;
-  height: 180px;
-  margin: 10px 0 0 100px;
+  width: 300px;
+  margin: 10px 0 0 190px;
 }
 .left-nav {
   float: left;
@@ -103,7 +111,7 @@ export default {
   background-color: #fff;
   padding: 3px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
-  margin: 20px 0 10px 30px;
+  margin: 20px 0 10px 100px;
   box-sizing: border-box;
   border-radius: 50%;
 }
@@ -137,17 +145,17 @@ li {
 }
 .title {
   position: absolute;
-  width: 50%;
+  width: 15%;
   text-align: center;
   text-align-last: center;
 }
 .title:before {
   position: absolute;
-  left: 90%;
+  left: 100%;
   content: '\FF1A';
 }
 .value {
-  padding-left: 50%;
+  padding-left: 40%;
   color: green;
 }
 .name {

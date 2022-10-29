@@ -1,9 +1,13 @@
 <template>
   <div class="background">
     <div class="home">
-      <h1>People's covid-19 vaccination status</h1>
+      <h1>The Patient who had Vaccinated</h1>
       <div class="home-list">
-        <ListItem v-for="people in peoples" :key="people.id" :people="people" />
+        <ListItem
+          v-for="patient in patients"
+          :key="patient.id"
+          :patient="patient"
+        />
       </div>
       <router-link
         id="page-prev"
@@ -35,7 +39,7 @@
 <script>
 // @ is an alias to /src
 import ListItem from '@/components/ListItem.vue'
-import PeopleService from '@/services/PeopleService.js'
+import PatientService from '@/services/PatientService.js'
 export default {
   name: 'HomeView',
   props: {
@@ -49,16 +53,16 @@ export default {
   },
   data() {
     return {
-      peoples: null,
+      patients: null,
       totalitems: 0
     }
   },
   // eslint-disable-next-line no-unused-vars
   beforeRouteEnter(routeTo, routeFrom, next) {
-    PeopleService.getPeoples(5, parseInt(routeTo.query.page) || 1)
+    PatientService.getPeoples(5, parseInt(routeTo.query.page) || 1)
       .then((response) => {
         next((comp) => {
-          comp.peoples = response.data
+          comp.patients = response.data
           comp.totalitems = response.headers['x-total-count']
         })
       })
@@ -68,9 +72,9 @@ export default {
   },
   // eslint-disable-next-line no-unused-vars
   beforeRouteUpdate(routeTo, routeFrom, next) {
-    PeopleService.getPeoples(5, parseInt(routeTo.query.page) || 1)
+    PatientService.getPeoples(5, parseInt(routeTo.query.page) || 1)
       .then((response) => {
-        this.peoples = response.data
+        this.patients = response.data
         this.totalitems = response.headers['x-total-count']
         next()
       })
