@@ -4,11 +4,13 @@
       <router-link :to="{ name: 'PatientDetail' }">Details</router-link>|
       <router-link :to="{ name: 'PatientVaccineDetail' }"
         >VaccineDetails</router-link
-      >|
-      <router-link :to="{ name: 'DoctorComment' }"
+      >
+      |
+      <router-link :to="{ name: 'DoctorCommentView' }"
         >Doctor's Comments</router-link
       >
     </div>
+
     <router-view :patient="GStore.patient" />
   </div>
 </template>
