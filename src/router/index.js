@@ -11,6 +11,7 @@ import PeopleService from '../services/PeopleService.js'
 import NProgress from 'nprogress'
 import GStore from '@/store'
 import DoctorCommentView from '../views/DoctorCommentView.vue'
+import Login from '@/views/LoginFormView.vue'
 const routes = [
   {
     path: '/',
@@ -87,6 +88,11 @@ const routes = [
     path: '/network-error',
     name: 'NetworkEorror',
     component: NetWorkErrorView
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ]
 
