@@ -3,7 +3,7 @@
     <div class="card card-container">
       <img
         id="profile-img"
-        srC="http://jmm66.com/upload/2021/12/header-248b931735fa43d8824eb84f1b7d96f6.jpg"
+        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
         class="profile-img-card"
       />
       <Form @submit="handleLogin" :validation-schema="schema">
@@ -23,6 +23,7 @@
             class="form-control"
           /><ErrorMessage name="password" class="error-feedback" />
         </div>
+
         <div class="form-group">
           <button class="btn btn-primary btn-block" :disabled="loading">
             <span
@@ -32,21 +33,22 @@
             <span>Login</span>
           </button>
         </div>
+
         <div class="form-group">
           <div v-if="message" class="alert alert-danger" role="alert">
             {{ message }}
           </div>
-        </div></Form
-      >
+        </div>
+      </Form>
     </div>
   </div>
 </template>
 <script>
 import { Form, Field, ErrorMessage } from 'vee-validate'
-import * as yup from 'yup'
 import AuthService from '@/services/AuthService.js'
+import * as yup from 'yup'
 export default {
-  name: 'LoginView ',
+  name: 'LoginView',
   components: {
     Form,
     Field,
@@ -54,8 +56,8 @@ export default {
   },
   data() {
     const schema = yup.object().shape({
-      username: yup.string().required('Username is required !'),
-      password: yup.string().required('Password is required ! ')
+      username: yup.string().required('Username is required!'),
+      password: yup.string().required('Password is required!')
     })
     return {
       loading: false,
@@ -70,12 +72,13 @@ export default {
           this.$router.push({ name: 'home' })
         })
         .catch(() => {
-          this.message = 'could not login'
+          this.message = 'could not Login'
         })
     }
   }
 }
 </script>
+
 <style scoped>
 label {
   display: block;
@@ -93,9 +96,9 @@ label {
   -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
   border-radius: 2px;
-  -moz-box-shadow: 0px 2px 2px rgba (0, 0，0，0.3);
-  -webkit-box-shadow: 0px 2px 2px rgba (0, 0，0, 0.3);
-  box-shadow: Opx 2px 2px rgba(0, 0，0, 0.3);
+  -moz-box-shadow: opx 2px 2px rgba (0, 0, 0, 0.3);
+  -webkit-box-shadow: Opx 2px 2px rgba(0, 0, 0, 0.3);
+  box-shadow: Opx 2px 2px rgba(0, 0, 0, 0.3);
 }
 .profile-img-card {
   width: 96px;

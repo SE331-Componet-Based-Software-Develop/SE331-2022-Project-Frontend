@@ -1,54 +1,35 @@
 <template>
-  <div class="background">
+  <router-link :to="{ name: 'DoctorDetail', params: { id: doctor.id } }">
     <div id="building">
       <div class="left-nav" @click="changeImage">
-        <img v-for="url in patient.imageUrl" :key="url" :src="url" />
+        <img v-for="url in doctor.imageUrl" :key="url" :src="url" />
       </div>
       <div class="list-item">
         <ul>
           <li>
-            <br />
-            <div class="title">Name</div>
-            <div class="value">{{ this.GStore.patient.name }}</div>
-            <br />
-          </li>
-          <li>
-            <div class="title">SurName</div>
-            <div class="value">{{ this.GStore.patient.sur_name }}</div>
-            <br />
-          </li>
-          <li>
-            <div class="title">Age</div>
-            <div class="value" v-if="this.GStore.patient.age != null">
-              {{ this.GStore.patient.age }}
-            </div>
-            <div class="value" v-else>None</div>
-            <br />
-          </li>
-          <li>
-            <div class="title">Home Town</div>
-            <div class="value" v-if="this.GStore.patient.hometown != null">
-              {{ this.GStore.patient.hometown }}
-            </div>
-            <div class="value" v-else>None</div>
-          </li>
-          <li>
-            <div class="title">Doctor</div>
-            <div class="value" v-if="this.GStore.patient.doctor != null">
-              {{ this.GStore.patient.doctor.name }}
-              {{ this.GStore.patient.doctor.sur_name }}
-            </div>
+            <div class="name">Name:{{ doctor.name }}</div>
+            <div class="name">Surname:{{ doctor.sur_name }}</div>
           </li>
         </ul>
         <br />
       </div>
     </div>
-  </div>
+  </router-link>
 </template>
 <script>
 export default {
-  props: ['patient'],
-  inject: ['GStore'],
+  name: 'DoctorListItem',
+  data() {
+    return {
+      img: require('../assets/' + this.doctor.id + '.jpg')
+    }
+  },
+  props: {
+    doctor: {
+      type: Object,
+      required: true
+    }
+  },
   methods: {
     changeImage() {
       this.$router.push({
@@ -56,9 +37,6 @@ export default {
         params: { id: this.patient.id }
       })
     }
-  },
-  created: function () {
-    console.log(this.GStore)
   }
 }
 </script>
@@ -72,12 +50,12 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  width: 600px;
-  height: 300px;
+  width: 500px;
+  height: 160px;
   cursor: pointer;
   border: 3px solid #a6abb1;
   border-radius: 20px;
-  margin: auto;
+  margin-bottom: 18px;
   text-align: center;
   background-image: url('../assets/card.jpg');
   background-position: absolute;
@@ -113,13 +91,13 @@ export default {
   float: right;
 }
 /* #building {
-  background: url('../assets/bc.jpg');
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  overflow: auto;
-  background-size: 100% 100%;
-} */
+    background: url('../assets/bc.jpg');
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    overflow: auto;
+    background-size: 100% 100%;
+  } */
 body {
   overflow: auto;
 }
@@ -133,9 +111,9 @@ li {
 }
 .title {
   position: absolute;
-  width: 50%;
-  text-align: center;
-  text-align-last: center;
+  width: 35%;
+  text-align: justify;
+  text-align-last: justify;
 }
 .title:before {
   position: absolute;
@@ -144,7 +122,6 @@ li {
 }
 .value {
   padding-left: 40%;
-  color: green;
 }
 .name {
   color: green;

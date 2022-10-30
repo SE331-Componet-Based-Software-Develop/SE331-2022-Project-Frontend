@@ -1,7 +1,9 @@
 <template>
-  <div class="background">
+  <div>
     <div id="building">
-      <div class="left-nav"><img :src="imgURL" /></div>
+      <div class="left-nav" @click="changeImage">
+        <img v-for="url in doctor.imageUrl" :key="url" :src="url" />
+      </div>
       <div class="list-item">
         <ul>
           <li>
@@ -32,10 +34,13 @@
 </template>
 <script>
 export default {
-  props: ['doctor'],
-  computed: {
-    imgURL() {
-      return require('../assets/' + this.doctor.id + '.jpg')
+  props: ['id', 'doctor'],
+  methods: {
+    changeImage() {
+      this.$router.push({
+        name: 'DoctorChangeImage',
+        params: { id: this.doctor.id }
+      })
     }
   }
 }
@@ -50,8 +55,8 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  width: 500px;
-  height: 200px;
+  width: 600px;
+  height: 300px;
   cursor: pointer;
   border: 3px solid #a6abb1;
   border-radius: 20px;

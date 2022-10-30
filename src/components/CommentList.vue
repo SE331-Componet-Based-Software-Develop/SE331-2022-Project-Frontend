@@ -1,10 +1,11 @@
 <template>
   <div class="comment-list">
-    <h3>Comments</h3>
     <ul>
       <li v-for="(comment, index) in comments" :key="index">
+        {{ index + 1 }}.doctor: {{ comment.doctor.name }}
+        {{ comment.doctor.sur_name }}
         <div class="list-style">
-          <div class="index-list">{{ index + 1 }}:</div>
+          <div class="index-list"></div>
           <div>{{ comment.comment }}</div>
         </div>
         <br />

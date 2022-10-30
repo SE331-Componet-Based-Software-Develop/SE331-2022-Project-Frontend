@@ -1,7 +1,9 @@
 <template>
   <div class="background">
     <div id="building">
-      <div class="left-nav"><img :src="imgURL" /></div>
+      <div class="left-nav" @click="changeImage">
+        <img v-for="url in patient.imageUrl" :key="url" :src="url" />
+      </div>
       <div class="list-item">
         <ul>
           <li>
@@ -12,7 +14,7 @@
             </div>
           </li>
           <li>
-            <div class="title">First Dose Date</div>
+            <div class="title">First Dose Time</div>
             <div class="value">
               {{ time(patient.vaccineinfo.firstdose_time) }}
             </div>
@@ -25,7 +27,7 @@
             </div>
           </li>
           <li>
-            <div class="title">Second Dose Date</div>
+            <div class="title">Second Dose Time</div>
             <div class="value">
               {{ time(patient.vaccineinfo.seconddose_time) }}
             </div>
@@ -34,112 +36,194 @@
         </ul>
       </div>
     </div>
-    <h2>Please add the info!</h2>
-    <div id="building1">
-      <div class="left-nav"><img :src="imgURL" /></div>
-      <div class="list-item">
-        <ul>
-          <li>
+    <div v-if="isAdmin">
+      <h2>You can update patient's vaccina infomation!</h2>
+      <div id="building1">
+        <div class="list-item">
+          <ul>
+            <li>
+              <br />
+              <div class="title">First Dose Name</div>
+              <div class="value">
+                <div v-if="patient.vaccineinfo.firstdose_name">
+                  {{ dose(patient.vaccineinfo.firstdose_name) }}
+                </div>
+                <div v-else>
+                  <BaseInput
+                    v-model="vaccineinfo.firstdose_name"
+                    type="text"
+                    label="first dose name"
+                    class="field"
+                  />
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="title">First Dose Time</div>
+              <div class="value">
+                <div v-if="patient.vaccineinfo.firstdose_time">
+                  {{ time(patient.vaccineinfo.firstdose_time) }}
+                </div>
+                <div v-else>
+                  <BaseInput
+                    v-model="vaccineinfo.firstdose_time"
+                    type="text"
+                    label="first dose time"
+                    class="field"
+                  />
+                </div>
+              </div>
+              <br />
+            </li>
+            <li>
+              <div class="title">Second Dose Name</div>
+              <div class="value">
+                <div v-if="patient.vaccineinfo.seconddose_name">
+                  {{ dose(patient.vaccineinfo.seconddose_name) }}
+                </div>
+                <div v-else>
+                  <BaseInput
+                    v-model="vaccineinfo.seconddose_name"
+                    type="text"
+                    label="second dose name"
+                    class="field"
+                  />
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="title">Second Dose Time</div>
+              <div class="value">
+                <div v-if="patient.vaccineinfo.seconddose_time">
+                  {{ time(patient.vaccineinfo.seconddose_time) }}
+                </div>
+                <div v-else>
+                  <BaseInput
+                    v-model="vaccineinfo.seconddose_time"
+                    type="text"
+                    label="second dose time"
+                    class="field"
+                  />
+                </div>
+              </div>
+            </li>
             <br />
-            <div class="title">First Dose</div>
-            <div class="value">
-              <div v-if="patient.vaccineinfo.firstdose_name">
-                {{ dose(patient.vaccineinfo.firstdose_name) }}
+            <li>
+              <div class="title">Vaccined Status</div>
+              <div class="value">
+                <div v-if="patient.vaccineinfo.vaccined_status == 'SecondDose'">
+                  {{ patient.vaccineinfo.vaccined_status }}
+                </div>
+                <div v-else>
+                  <BaseSelect
+                    :options="this.Status"
+                    v-model="vaccineinfo.vaccined_status"
+                  />
+                </div>
               </div>
-              <div v-else>
-                <input
-                  type="text"
-                  value=""
-                  class="input_control"
-                  placeholder="input"
-                  name="firstdose_name"
-                  @input="print($event.target.value)"
-                />
+            </li>
+            <li>
+              <div class="title">Doctor</div>
+              <div class="value">
+                <div v-if="patient.doctor != null">
+                  {{ patient.doctor.name }} {{ patient.doctor.sur_name }}
+                </div>
+                <div v-else>
+                  <BaseSelectDoc :options="this.doctors" v-model="tempdid" />
+                </div>
               </div>
-            </div>
-          </li>
-          <li>
-            <div class="title">First Dose Date</div>
-            <div class="value">
-              <div v-if="patient.vaccineinfo.firstdose_time">
-                {{ dose(patient.vaccineinfo.firstdose_time) }}
-              </div>
-              <div v-else>
-                <input
-                  type="text"
-                  value=""
-                  class="input_control"
-                  placeholder="input"
-                  name="firstdose_time"
-                  @input="print($event.target.value)"
-                />
-              </div>
-            </div>
+            </li>
             <br />
-          </li>
-          <li>
-            <div class="title">Second Dose</div>
-            <div class="value">
-              <div v-if="patient.vaccineinfo.seconddose_name">
-                {{ dose(patient.vaccineinfo.seconddose_name) }}
-              </div>
-              <div v-else>
-                <input
-                  type="text"
-                  value=""
-                  class="input_control"
-                  placeholder="input"
-                  name="seconddose_name"
-                  @input="print($event.target.value)"
-                />
-              </div>
-            </div>
-          </li>
-          <li>
-            <div class="title">Second Dose</div>
-            <div class="value">
-              <div v-if="patient.vaccineinfo.seconddose_time">
-                {{ dose(patient.vaccineinfo.firstdose_time) }}
-              </div>
-              <div v-else>
-                <input
-                  type="text"
-                  value=""
-                  class="input_control"
-                  placeholder="input"
-                  name="seconddose_time"
-                  @input="print($event.target.value)"
-                />
-              </div>
-            </div>
-          </li>
-          <br />
-        </ul>
+          </ul>
+        </div>
       </div>
+      <button @click="vaccine1">Update</button>
     </div>
-    <button @click="vaccine">Return</button>
   </div>
 </template>
 <script>
+import DoctorService from '@/services/DoctorService.js'
+import VaccineService from '@/services/VaccineService.js'
+import AuthService from '@/services/AuthService.js'
+// import PatientService from '@/services/PatientService'
 export default {
   props: ['id', 'patient'],
   inject: ['GStore'],
-
+  data() {
+    return {
+      vaccineinfo: {
+        firstdose_name: '',
+        firstdose_time: '',
+        seconddose_name: '',
+        seconddose_time: '',
+        vaccined_status: ''
+      },
+      tempdid: '',
+      doctorid: '',
+      Status: [
+        { id: '1', name: 'Not Vaccinated' },
+        { id: '2', name: 'FirstDose' },
+        { id: '3', name: 'SecondDose' }
+      ],
+      doctors: []
+    }
+  },
+  created: function () {
+    DoctorService.getTotalDoctors().then((response) => {
+      this.doctors = response.data
+    })
+  },
   methods: {
-    vaccine() {
-      // this.GStore.flashMessage =
-      //   'You are successfully return to ' +
-      //   this.patient.name +
-      //   ' ' +
-      //   this.patient.sur_name
-      // setTimeout(() => {
-      //   this.GStore.flashMessage = ''
-      // }, 3000)
-      // this.$router.push({
-      //   name: 'PatientDetail',
-      //   params: { id: this.patient.id }
-      // })
-      console.log(this.vaccineinfo.seconddose_name)
+    changeImage() {
+      this.$router.push({
+        name: 'ChangeImage',
+        params: { id: this.patient.id }
+      })
+    },
+    vaccine1() {
+      if (this.vaccineinfo.firstdose_name == '')
+        this.vaccineinfo.firstdose_name =
+          this.patient.vaccineinfo.firstdose_name
+      if (this.vaccineinfo.firstdose_time == '')
+        this.vaccineinfo.firstdose_time =
+          this.patient.vaccineinfo.firstdose_time
+      if (this.vaccineinfo.vaccined_status == 'Not Vaccinated') {
+        this.vaccineinfo.firstdose_name = null
+        this.vaccineinfo.firstdose_time = null
+        this.vaccineinfo.seconddose_name = null
+        this.vaccineinfo.seconddose_time = null
+      }
+      if (this.vaccineinfo.vaccined_status == 'FirstDose') {
+        this.vaccineinfo.seconddose_name = null
+        this.vaccineinfo.seconddose_time = null
+      }
+      console.log(this.status)
+      console.log(this.vaccineinfo)
+      console.log(this.patient)
+      console.log(this.doctors)
+      if (this.patient.doctor != null) {
+        this.doctorid = this.patient.doctor.id
+      } else {
+        this.doctorid = this.tempdid
+      }
+      console.log('this did=' + this.doctorid)
+      VaccineService.updateVaccine(
+        this.vaccineinfo,
+        this.patient.id,
+        this.doctorid
+      ).then((response) => {
+        console.log(response)
+        this.$router.go(0)
+      })
+      this.GStore.flashMessage =
+        'You are successfully update to ' +
+        this.patient.name +
+        ' ' +
+        this.patient.sur_name +
+        ' vaccine information'
+      setTimeout(() => {
+        this.GStore.flashMessage = ''
+      }, 3000)
     }
   },
   computed: {
@@ -157,6 +241,9 @@ export default {
     },
     imgURL() {
       return require('../assets/' + this.patient.id + '.jpg')
+    },
+    isAdmin() {
+      return AuthService.hasRoles('ROLE_ADMIN')
     }
   }
 }
@@ -178,7 +265,6 @@ export default {
   background-size: 100% 100%;
   /* background-color: blanchedalmond; */
 }
-/*����Ա������Ϣ�����ʽ*/
 #building1 {
   display: flex;
   flex-direction: column;
@@ -196,7 +282,7 @@ export default {
   /* background-color: blanchedalmond; */
 }
 .input_control {
-  width: 200px;
+  width: 150px;
   margin: 10px auto;
   box-sizing: border-box;
   text-align: center;

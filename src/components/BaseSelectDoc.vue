@@ -5,18 +5,18 @@
     :value="modelValue"
     v-bind="{
       ...$attrs,
-      onChange: ($event) => {
-        $emit('update:modelValue', $event.target.value)
+      onChange: ($doctor) => {
+        $emit('update:modelValue', $doctor.target.value)
       }
     }"
   >
     <option
       v-for="option in options"
-      :value="option.name"
+      :value="option.id"
       :key="option.id"
       :selected="option.id === modelValue.id"
     >
-      {{ option.name }}
+      {{ option.name }} {{ option.sur_name }}
     </option>
   </select>
 </template>
