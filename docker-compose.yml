@@ -1,6 +1,0 @@
-version: "3.9"
-services:
-  web:
-    image: "mirrorml/se331-2022-project-1-a:latest"
-    ports:
-      - 80:80
