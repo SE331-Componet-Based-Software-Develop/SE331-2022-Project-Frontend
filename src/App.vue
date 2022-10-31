@@ -132,7 +132,7 @@ body {
 }
 
 body {
-  /* background: url('./assets/bc.jpg'); */
+  background: url('./assets/bc.jpg');
   width: 100%;
   height: 100%;
   background-position: absolute;
