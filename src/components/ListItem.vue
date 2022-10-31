@@ -1,7 +1,9 @@
 <template>
   <router-link :to="{ name: 'PatientDetail', params: { id: patient.id } }">
     <div id="building">
-      <div class="left-nav"><img :src="imgURl" /></div>
+      <div class="left-nav" @click="changeImage">
+        <img v-for="url in patient.imageUrl" :key="url" :src="url" />
+      </div>
       <div class="list-item">
         <ul>
           <li>
@@ -19,11 +21,6 @@
 <script>
 export default {
   name: 'ListItem',
-  data() {
-    return {
-      img: require('../assets/' + this.patient.id + '.jpg')
-    }
-  },
   props: {
     patient: {
       type: Object,
@@ -36,9 +33,14 @@ export default {
         if (dose) return 'Vaccinated'
         else return 'Not vaccinated'
       }
-    },
-    imgURl: function () {
-      return this.img
+    }
+  },
+  methods: {
+    changeImage() {
+      this.$router.push({
+        name: 'ChangeImage',
+        params: { id: this.patient.id }
+      })
     }
   }
 }

@@ -1,17 +1,25 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import AboutView from '@/views/AboutView.vue'
-import PatientDetailView from '@/views/PatientDetailView.vue'
-import PatientVaccineDetailView from '@/views/PatientVaccineDetailView'
-import VaccineDetailView from '@/views/VaccineDetailView.vue'
-import LayoutView from '@/views/LayoutView.vue'
-import NotFoundView from '@/views/NotFoundView.vue'
-import NetWorkErrorView from '@/views/NetworkErrorView.vue'
-import PatientService from '@/services/PatientService.js'
+import HomeView from '../views/HomeView.vue'
+import DoctorPatientView from '../views/DoctorPatientView.vue'
+import DoctorHomeView from '@/views/DoctorHomeView.vue'
+import AboutView from '../views/AboutView.vue'
+import PatientDetailView from '../views/PatientDetailView.vue'
+import PatientVaccineDetailView from '../views/PatientVaccineDetailView'
+import VaccineDetailView from '../views/VaccineDetailView.vue'
+import LayoutView from '../views/LayoutView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
+import NetWorkErrorView from '../views/NetworkErrorView.vue'
+import PatientService from '../services/PatientService.js'
+import DoctorService from '../services/DoctorService.js'
 import DoctorLayoutView from '@/views/DoctorLayoutView'
-import DoctorCommentView from '@/views/DoctorCommentView'
-import DoctorPatientView from '@/views/DoctorPatientView'
-import DoctorPatientDetailView from '@/views/DoctorPatientDetailView'
+// import DoctorCommentView from '@/views/DoctorCommentView'
+// import DoctorPatientDetailView from '@/views/DoctorPatientDetailView'
+import DoctorDetailView from '@/views/DoctorDetailView.vue'
+import ChangeImage from '@/views/ChangeImage.vue'
+import DoctorChangeImage from '@/views/DoctorChangeImage.vue'
+import PatientCommentView from '@/views/PatientCommentView.vue'
+import Register from '@/views/RegisterView.vue'
+import AdminUser from '@/views/AdminUserView.vue'
 import NProgress from 'nprogress'
 import GStore from '@/store'
 import Login from '@/views/LoginFormView.vue'
@@ -25,9 +33,22 @@ const routes = [
     })
   },
   {
+    path: '/doctors',
+    name: 'doctorhome',
+    component: DoctorHomeView,
+    props: (route) => ({
+      page: parseInt(route.query.page) || 1
+    })
+  },
+  {
     path: '/about',
     name: 'about',
     component: AboutView
+  },
+  {
+    path: '/user',
+    name: 'AdminUser',
+    component: AdminUser
   },
   {
     path: '/patient/:id',
@@ -62,24 +83,36 @@ const routes = [
         name: 'PatientVaccineDetail',
         component: PatientVaccineDetailView,
         props: true
+      },
+      {
+        path: '',
+        name: 'ChangeImage',
+        component: ChangeImage,
+        props: true
+      },
+      {
+        path: '',
+        name: 'PatientComment',
+        component: PatientCommentView,
+        props: true
       }
     ]
   },
   {
-    path: '/DoctorLayout/:id',
+    path: '/Doctor/:id',
     name: 'DoctorLayoutView',
     component: DoctorLayoutView,
     props: true,
     beforeEnter: (to) => {
-      return PatientService.getPeople(to.params.id)
+      return DoctorService.getDoctor(to.params.id)
         .then((response) => {
-          GStore.patient = response.data
+          GStore.doctor = response.data
         })
         .catch((error) => {
           if (error.response && error.response.status == 404) {
             this.$router.push({
               name: '404Resource',
-              params: { resoutce: 'patient' }
+              params: { resoutce: 'doctor' }
             })
           } else {
             this.$router.push({ name: 'NetworkError' })
@@ -88,30 +121,63 @@ const routes = [
     },
     children: [
       {
-        path: '',
-        name: 'DoctorPatientDetailView',
-        component: DoctorPatientDetailView,
+        path: '/',
+        name: 'DoctorDetail',
+        component: DoctorDetailView,
         props: true
       },
       {
         path: '',
-        name: 'DoctorCommentView',
-        component: DoctorCommentView,
+        name: 'DoctorChangeImage',
+        component: DoctorChangeImage,
         props: true
+      },
+      {
+        path: '',
+        name: 'DoctorPatient',
+        component: DoctorPatientView,
+        props: (route) => ({
+          page: parseInt(route.query.page) || 1,
+          id: null
+        })
       }
+      // {
+      //   path: '/DoctorPatientDetai',
+      //   name: 'DoctorPatientDetailView',
+      //   component: DoctorPatientDetailView,
+      //   props: true
+      // },
+      // {
+      //   path: '/DoctorComment',
+      //   name: 'DoctorCommentView',
+      //   component: DoctorCommentView,
+      //   props: true
+      // }
     ]
   },
   {
-    path: '',
+    path: '/Vaccine',
     name: 'VaccineDetail',
     component: VaccineDetailView,
-    props: true
+    props: (route) => ({
+      page: parseInt(route.query.page) || 1
+    })
   },
   {
-    path: '',
+    path: '/DoctorPatient',
     name: 'DoctorPatientView',
     component: DoctorPatientView,
     props: true
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    component: Register
   },
   {
     path: '/:catchAll(.*)',
@@ -128,11 +194,6 @@ const routes = [
     path: '/network-error',
     name: 'NetworkEorror',
     component: NetWorkErrorView
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
   }
 ]
 
@@ -147,7 +208,6 @@ const router = createRouter({
     }
   }
 })
-
 router.beforeEach(() => {
   NProgress.start
   NProgress.set(0.4)

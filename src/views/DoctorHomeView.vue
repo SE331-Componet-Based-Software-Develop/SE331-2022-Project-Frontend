@@ -1,21 +1,18 @@
 <template>
-  <div class="background">
+  <div class="background" v-if="isAdmin">
     <div class="home">
-      <h1>
-        Doctor {{ this.GStore.doctor.name }} {{ this.GStore.doctor.sur_name }}'s
-        patients
-      </h1>
+      <h1>The Doctor List</h1>
       <div class="home-list">
-        <ListItem
-          v-for="patient in patients"
-          :key="patient.id"
-          :patient="patient"
+        <DoctorListItem
+          v-for="doctor in doctors"
+          :key="doctor.id"
+          :doctor="doctor"
         />
       </div>
       <router-link
         id="page-prev"
         :to="{
-          name: 'DoctorPatient',
+          name: 'doctorhome',
           query: { page: page - 1 }
         }"
         rel="prev"
@@ -27,7 +24,7 @@
       <router-link
         id="page-next"
         :to="{
-          name: 'DoctorPatient',
+          name: 'doctorhome',
           query: { page: page + 1 }
         }"
         rel="next"
@@ -37,46 +34,44 @@
       </router-link>
     </div>
   </div>
+  <div v-else-if="isDoctor">
+    <h4>Go to your own page</h4>
+    <router-link
+      :to="{ name: 'DoctorDetail', params: { id: GStore.currentUser.id } }"
+      >My page</router-link
+    >
+  </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import ListItem from '@/components/ListItem.vue'
-import PatientService from '@/services/PatientService.js'
+import DoctorListItem from '@/components/DoctorListItem.vue'
+import DoctorService from '@/services/DoctorService.js'
+import AuthService from '@/services/AuthService.js'
 export default {
-  name: 'DoctorPatient',
+  name: 'DoctorHomeView',
   inject: ['GStore'],
   props: {
-    id: {
-      type: Number,
-      required: true
-    },
     page: {
       type: Number,
       required: true
     }
   },
   components: {
-    ListItem
+    DoctorListItem
   },
   data() {
     return {
-      patients: null,
-      doctor: null,
+      doctors: null,
       totalitems: 0
     }
   },
   // eslint-disable-next-line no-unused-vars
   beforeRouteEnter(routeTo, routeFrom, next) {
-    console.log(routeTo)
-    PatientService.getPeopleByDoctor(
-      routeTo.params.id,
-      2,
-      parseInt(routeTo.query.page) || 1
-    )
+    DoctorService.getDoctors(2, parseInt(routeTo.query.page) || 1)
       .then((response) => {
         next((comp) => {
-          comp.patients = response.data
+          comp.doctors = response.data
           comp.totalitems = response.headers['x-total-count']
         })
       })
@@ -86,14 +81,9 @@ export default {
   },
   // eslint-disable-next-line no-unused-vars
   beforeRouteUpdate(routeTo, routeFrom, next) {
-    PatientService.getPeopleByDoctor(
-      routeTo.params.id,
-      2,
-      parseInt(routeTo.query.page) || 1
-    )
+    DoctorService.getDoctors(2, parseInt(routeTo.query.page) || 1)
       .then((response) => {
-        this.doctor = this.GStore.doctor
-        this.patients = response.data
+        this.doctors = response.data
         this.totalitems = response.headers['x-total-count']
         next()
       })
@@ -101,17 +91,16 @@ export default {
         next({ name: 'NetworkError' })
       })
   },
-  // created: function () {
-  //   // console.log(this.id, this.GStore)
-  //   DoctorService.getDoctor(this.GStore.doctor.id).then((response) => {
-  //     this.doctor = response.data
-  //     this.patients = response.data.patients
-  //   })
-  // },
   computed: {
     hasNextPage() {
       let totalPages = Math.ceil(this.totalitems / 2)
       return this.page < totalPages
+    },
+    isDoctor() {
+      return AuthService.hasRoles('ROLE_DOCTOR')
+    },
+    isAdmin() {
+      return AuthService.hasRoles('ROLE_ADMIN')
     }
   }
 }

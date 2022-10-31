@@ -4,23 +4,15 @@
     <h2></h2>
     <table>
       <tr align="center">
-        <th class="id_center" width="50">{{ vaccine.id }}</th>
-        <th width="300">
-          {{ vaccine.patient.name }} {{ vaccine.patient.sur_name }}
+        <th width="200">USER ID: {{ user.id }}</th>
+        <th width="300">USER NAME: {{ user.firstname }} {{ user.lastname }}</th>
+        <th width="300">USER EMAIL: {{ user.email }}</th>
+        <th width="200" class="color">Select User's role</th>
+        <th width="20">
+          <BaseSelectDoc :options="this.roles" v-model="num" />
         </th>
-        <th width="200" class="status">{{ vaccine.vaccined_status }}</th>
-        <th width="350">{{ vaccine.firstdose_name }}</th>
-        <th width="150">{{ vaccine.firstdose_time }}</th>
-        <th width="350">{{ vaccine.seconddose_name }}</th>
-        <th width="150">{{ vaccine.seconddose_time }}</th>
         <th width="300">
-          <router-link
-            :to="{
-              name: 'PatientVaccineDetail',
-              params: { id: vaccine.patient.id }
-            }"
-            >Update</router-link
-          >
+          <button @click="Update1">Confirm</button>
         </th>
       </tr>
       <br />
@@ -28,19 +20,40 @@
   </div>
 </template>
 <script>
+import UserService from '@/services/UserService.js'
 export default {
-  name: 'VaccineItem',
+  name: 'UserItem',
   props: {
-    vaccine: {
+    user: {
       type: Object,
       required: true
     }
   },
-  method: {
-    Update() {
-      this.$router.push({
-        name: 'PatientDetail',
-        params: { id: this.vaccine.patient.id }
+  data() {
+    return {
+      num: '',
+      roles: [
+        { id: '1', name: 'Doctor' },
+        { id: '2', name: 'Patient' }
+      ]
+    }
+  },
+  methods: {
+    Update1() {
+      if (this.num == '') {
+        alert('the role of the user can not be null')
+        return
+      }
+      console.log(this.user.id, this.num)
+      UserService.updaterole(this.user.id, this.num).then((response) => {
+        this.users = response.data
+        this.$router.go(0)
+      })
+      this.GStore.flashMessage = 'You are successfully set the role of the user'
+      setTimeout(() => {
+        this.GStore.flashMessage = ''
+      }, 3000).catch(() => {
+        ;({ name: 'NetworkError' })
       })
     }
   }
@@ -51,6 +64,9 @@ export default {
   color: green;
   font: bold;
   font-size: 20px;
+}
+.color {
+  color: cadetblue;
 }
 .mytable {
   margin: 0, auto;
@@ -108,13 +124,13 @@ export default {
   float: right;
 }
 /* #building {
-    background: url('../assets/bc.jpg');
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    overflow: auto;
-    background-size: 100% 100%;
-  } */
+      background: url('../assets/bc.jpg');
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      overflow: auto;
+      background-size: 100% 100%;
+    } */
 body {
   overflow: auto;
 }

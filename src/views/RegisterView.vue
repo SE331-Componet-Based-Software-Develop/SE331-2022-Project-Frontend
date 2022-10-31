@@ -1,11 +1,11 @@
 <template>
   <div class="col-md-12">
     <div class="card card-container">
-      <img
-        id="profile-img"
-        src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
-        class="profile-img-card"
-      />
+      <form>
+        <UploadImages class="img" @changed="handleImages" />
+      </form>
+      <br />
+      <br />
       <Form @submit="handleRegister" :validation-schema="schema">
         <div v-if="!successful">
           <div class="form-group">
@@ -36,6 +36,24 @@
           </div>
 
           <div class="form-group">
+            <label for="firstname">Firstname</label>
+            <Field
+              name="firstname"
+              type="text"
+              class="form-control"
+            /><ErrorMessage name="firstname" class="error-feedback" />
+          </div>
+
+          <div class="form-group">
+            <label for="lastname">Lastname</label>
+            <Field
+              name="lastname"
+              type="text"
+              class="form-control"
+            /><ErrorMessage name="lastname" class="error-feedback" />
+          </div>
+
+          <div class="form-group">
             <button class="btn btn-primary btn-block" :disabled="loading">
               <span
                 v-show="loading"
@@ -59,12 +77,15 @@
 </template>
 <script>
 import { Form, Field, ErrorMessage } from 'vee-validate'
+import PatientService from '@/services/PatientService.js'
+import UploadImages from 'vue-upload-drop-images'
 import * as yup from 'yup'
 // eslint-disable-next-line
   import AuthService from '@/services/AuthService.js'
 export default {
   name: 'RegisterView',
   components: {
+    UploadImages,
     Form,
     Field,
     ErrorMessage
@@ -86,37 +107,67 @@ export default {
         .string()
         .required('Password is required!')
         .min(6, 'Must be at least 6 characters!')
-        .max(40, 'Must be maximum 40 characters!')
+        .max(40, 'Must be maximum 40 characters!'),
+      firstname: yup
+        .string()
+        .required('Username is required!')
+        .min(3, 'Must be at least 3 characters!')
+        .max(20, 'Must be maximum 20 characters!'),
+      lastname: yup
+        .string()
+        .required('Username is required!')
+        .min(3, 'Must be at least 3 characters!')
+        .max(20, 'Must be maximum 20 characters!')
     })
     return {
       successful: false,
       loading: false,
       message: '',
-      schema
+      schema,
+      imageUrl: [],
+      files: []
     }
   },
   mounted() {
     if (this.GStore.currentUser) {
-      this.$router.push('/event')
+      this.$router.push('/home')
     }
   },
   methods: {
     // eslint-disable-next-line
       handleRegister(user) {
-      AuthService.register(user)
-        .then(() => {
-          this.GStore.flashMessage = 'You are successfully register'
-          setTimeout(() => {
-            this.GStore.flashMessage = ''
-          }, 3000)
-          this.$router.push({ name: 'Login' })
+      if (this.files.length > 1) {
+        this.GStore.flashMessage = 'only 1 image is allowed to be added'
+        setTimeout(() => {
+          this.GStore.flashMessage = ''
+        }, 3000)
+        return
+      }
+      Promise.all(
+        this.files.map((file) => {
+          return PatientService.updateFile(file)
+        })
+      )
+        .then((response) => {
+          user.imageUrl = response.map((r) => r.data)
+          AuthService.register(user).then(() => {
+            this.GStore.flashMessage = 'You are successfully register'
+            setTimeout(() => {
+              this.GStore.flashMessage = ''
+            }, 3000)
+            this.$router.push({ name: 'Login' })
+          })
+          this.message = ''
+          this.successful = false
+          this.loading = true
         })
         .catch(() => {
-          this.message = 'could not Sign up! Please try again'
+          this.$router.push('NetworkError')
         })
-      this.message = ''
-      this.successful = false
-      this.loading = true
+    },
+    handleImages(files) {
+      console.log(files)
+      this.files = files
     }
   }
 }
@@ -126,6 +177,10 @@ export default {
 label {
   display: block;
   margin-top: 10px;
+}
+.img {
+  width: 240px;
+  height: 180px;
 }
 .card-container.card {
   max-width: 350px !important;

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="background">
     <div id="building">
       <div class="left-nav"><img :src="imgURL" /></div>
@@ -168,4 +168,4 @@ li {
 .status {
   padding-bottom: 8px;
 }
-</style>
+</style> -->

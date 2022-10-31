@@ -1,5 +1,5 @@
 import apiClient from '@/services/AxiosClient.js'
-import GStore from '@/store/index.js'
+import GStore from '@/store'
 export default {
   login(user) {
     return apiClient
@@ -10,7 +10,11 @@ export default {
       .then((response) => {
         localStorage.setItem('token', response.data.token)
         localStorage.setItem('user', JSON.stringify(response.data.user))
+        console.log(response.data.user)
+        console.log(JSON.stringify(response.data.user.name))
+        console.log(response.data)
         GStore.currentUser = response.data.user
+        console.log(GStore)
         return Promise.resolve(response.data)
       })
       .catch((error) => {
@@ -40,6 +44,6 @@ export default {
     }
   },
   register(user) {
-    return apiClient.post('/user', user)
+    return apiClient.post('/register', user)
   }
 }
